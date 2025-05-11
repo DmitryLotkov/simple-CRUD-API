@@ -1,18 +1,33 @@
-import { IncomingMessage, ServerResponse } from 'http';
-import { createUserController, getUsersController } from '../controllers/user.controller';
+import { IncomingMessage, ServerResponse } from 'http'
+import {
+  createUserController,
+  getUsersController,
+  getUserByIdController
+} from '../controllers/user.controller'
 
 export const userRouter = (req: IncomingMessage, res: ServerResponse): boolean => {
-  const { url, method } = req;
+  const { url, method } = req
 
-  if (url === '/users' && method === 'GET') {
-    getUsersController(req, res);
-    return true;
+  const host = req.headers.host ?? 'localhost'
+  const parsedUrl = new URL(url as string, `https://${host}`)
+
+  const pathname = parsedUrl.pathname
+  const userId = pathname.match(/^\/users\/([a-z0-9-]+)$/)?.[1]
+
+  if (pathname === '/users' && method === 'GET') {
+    getUsersController(res)
+    return true
   }
 
-  if (url === '/users' && method === 'POST') {
-    createUserController(req, res);
-    return true;
+  if (pathname === '/users' && method === 'POST') {
+    createUserController(req, res)
+    return true
   }
 
-  return false;
-};
+  if (method === 'GET' && userId) {
+    getUserByIdController(userId, res)
+    return true
+  }
+
+  return false
+}

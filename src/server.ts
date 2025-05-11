@@ -1,18 +1,22 @@
-import http from 'node:http';
-import { userRouter } from './routes/user.routes';
+import http from 'node:http'
+import { userRouter } from './routes/user.routes'
+import { sendJSON } from './utils/response'
 
 export const createServer = () =>
-    http.createServer((req, res) => {
-        try {
-            if (userRouter(req, res)) {
-                return;
-            }
+  http.createServer((req, res) => {
+    if (!req.url || !req.method) {
+      sendJSON(res, 400, { message: 'Bad Request: Missing url or method' })
+      return
+    }
 
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Route not found' }));
-        } catch (err) {
-            console.error('Internal server error:', err);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Internal Server Error' }));
-        }
-    });
+    try {
+      if (userRouter(req, res)) {
+        return
+      }
+
+      sendJSON(res, 400, { message: 'Route not found' })
+    } catch (err) {
+      console.error('Internal server error:', err)
+      sendJSON(res, 500, { message: 'Internal Server Error' })
+    }
+  })
