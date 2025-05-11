@@ -1,13 +1,12 @@
 import { IncomingMessage, ServerResponse } from 'http'
-import { getAllUsers, addUser } from '../services/user.service'
+import { getAllUsers, addUser, filterUsers } from '../services/user.service'
 import { sendJSON } from '../utils/response'
-import { validateCreateUser } from '../utils/validateCreateUser'
+import { validateUser } from '../utils/validateUser'
 import { v4 as uuidv4 } from 'uuid'
 import { User } from '../models/user'
 
-const users = getAllUsers()
 export const getUsersController = (res: ServerResponse) => {
-  sendJSON(res, 200, users)
+  sendJSON(res, 200, getAllUsers())
 }
 
 export const createUserController = (req: IncomingMessage, res: ServerResponse) => {
@@ -21,7 +20,7 @@ export const createUserController = (req: IncomingMessage, res: ServerResponse) 
     try {
       const data: User = JSON.parse(body)
 
-      validateCreateUser(data, res)
+      validateUser(data, res)
 
       const newUser: User = {
         id: uuidv4(),
@@ -43,10 +42,21 @@ export const createUserController = (req: IncomingMessage, res: ServerResponse) 
 }
 
 export const getUserByIdController = (userId: string, res: ServerResponse) => {
-  const userById = users.find((user) => user.id === userId)
+  const userById = getAllUsers().find((user) => user.id === userId)
 
   if (userById) {
     sendJSON(res, 200, userById)
+  } else {
+    sendJSON(res, 404, { message: `User with id "${userId}" not found` })
+  }
+}
+
+export const deleteUserByIdController = (userId: string, res: ServerResponse) => {
+  const userById = getAllUsers().find((user) => user.id === userId)
+
+  if (userById) {
+    filterUsers(userId)
+    sendJSON(res, 204, null)
   } else {
     sendJSON(res, 404, { message: `User with id "${userId}" not found` })
   }

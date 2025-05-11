@@ -1,10 +1,13 @@
 import { User } from '../models/user'
 
-const users: User[] = []
+let users: User[] = []
 
 export const getAllUsers = (): User[] => users
 
-export const addUser = (user: User): User => {
-  users.push(user)
-  return user
+export const addUser = (user: User) => {
+  users = [...users, user]
+}
+
+export const filterUsers = (userId: string) => {
+  users = users.filter((user) => user.id !== userId)
 }
