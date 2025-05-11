@@ -1,6 +1,6 @@
 import http from 'node:http'
 import { userRouter } from './routes/user.routes'
-import { sendJSON } from './utils/response'
+import { sendJSON } from './utils/sendJSON'
 
 export const createServer = () =>
   http.createServer((req, res) => {

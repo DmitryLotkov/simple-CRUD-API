@@ -1,8 +1,8 @@
 import { RawUser, User } from '../models/user'
-import { sendJSON } from './response'
+import { sendJSON } from './sendJSON'
 import { ServerResponse } from 'http'
 
-export const validateUser = (user: User, res: ServerResponse) => {
+export const validateUser = (user: RawUser, res: ServerResponse) => {
   const { username, age, hobbies } = user
   if (
     typeof username !== 'string' ||

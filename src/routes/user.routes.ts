@@ -3,9 +3,10 @@ import {
   createUserController,
   getUsersController,
   getUserByIdController,
-  deleteUserByIdController
+  deleteUserByIdController,
+  updateUserController
 } from '../controllers/user.controller'
-import { sendJSON } from '../utils/response'
+import { sendJSON } from '../utils/sendJSON'
 
 export const userRouter = (req: IncomingMessage, res: ServerResponse): boolean => {
   const { url, method } = req
@@ -39,6 +40,11 @@ export const userRouter = (req: IncomingMessage, res: ServerResponse): boolean =
 
   if (method === 'DELETE' && userId) {
     deleteUserByIdController(userId, res)
+    return true
+  }
+
+  if (method === 'PUT' && userId) {
+    updateUserController(userId, req, res)
     return true
   }
 

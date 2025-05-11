@@ -1,4 +1,4 @@
-import { User } from '../models/user'
+import { User, RawUser } from '../models/user'
 
 let users: User[] = []
 
@@ -10,4 +10,15 @@ export const addUser = (user: User) => {
 
 export const filterUsers = (userId: string) => {
   users = users.filter((user) => user.id !== userId)
+}
+
+export const updateUsers = (userId: string, newUser: RawUser) => {
+  users = users.map((user) =>
+    user.id === userId
+      ? {
+          id: user.id,
+          ...newUser
+        }
+      : { ...user }
+  )
 }
