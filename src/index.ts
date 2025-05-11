@@ -1,12 +1,14 @@
 import 'dotenv/config'
 import http from 'node:http';
-import {User} from "./types";
+import {User} from "./models/user";
 
 const PORT = process.env.PORT || 5000;
 const users: User[] = [
     {
         id: '1',
-        name: 'Dims'
+        username: 'Dima',
+        age: 22,
+        hobbies: ['fishing']
     }
 ];
 
