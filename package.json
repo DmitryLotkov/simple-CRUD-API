@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest",
     "start:prod": "tsc && node dist/index.js",
-    "start:dev": "ts-node-dev --inspect --respawn src/index.ts"
+    "start:dev": "ts-node-dev --inspect --respawn src/index.ts",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "keywords": [],
   "author": "Dmitry Lotkov",
@@ -26,11 +27,11 @@
     "prettier": "^3.5.3",
     "supertest": "^7.1.0",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "ts-jest": "^29.3.2"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
-    "ts-jest": "^29.3.2",
     "uuid": "^11.1.0"
   }
 }

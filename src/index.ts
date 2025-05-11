@@ -1,10 +1,10 @@
 import 'dotenv/config'
-import {createServer} from "./server";
+import { createServer } from './server'
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000
 
-const server = createServer();
+const server = createServer()
 
 server.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
-});
+  console.log(`Server is running at http://localhost:${PORT}`)
+})
