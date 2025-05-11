@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { getUsersController } from '../controllers/user.controller';
+import { createUserController, getUsersController } from '../controllers/user.controller';
 
 export const userRouter = (req: IncomingMessage, res: ServerResponse): boolean => {
   const { url, method } = req;
@@ -10,7 +10,8 @@ export const userRouter = (req: IncomingMessage, res: ServerResponse): boolean =
   }
 
   if (url === '/users' && method === 'POST') {
-    debugger;
+    createUserController(req, res);
+    return true;
   }
 
   return false;

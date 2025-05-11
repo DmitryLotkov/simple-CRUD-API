@@ -1,10 +1,10 @@
-import { User } from '../models/user';
+import { User } from '../models/user'
 
-let users: User[] = [];
+const users: User[] = []
 
-export const getAllUsers = (): User[] => users;
+export const getAllUsers = (): User[] => users
 
 export const addUser = (user: User): User => {
-    users.push(user);
-    return user;
-};
+  users.push(user)
+  return user
+}
