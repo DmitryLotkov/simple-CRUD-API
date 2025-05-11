@@ -14,9 +14,18 @@
   },
   "description": "Simple App that implements CRUD API",
   "devDependencies": {
+    "@eslint/js": "^9.26.0",
     "@types/node": "^22.15.17",
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
+    "@typescript-eslint/parser": "^8.32.0",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^16.1.0",
+    "prettier": "^3.5.3",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.0"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
