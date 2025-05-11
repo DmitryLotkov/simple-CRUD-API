@@ -1,18 +1,18 @@
-import { RawUser, User } from '../models/user'
-import { sendJSON } from './sendJSON'
-import { ServerResponse } from 'http'
+import { RawUser } from '../models/user'
 
-export const validateUser = (user: RawUser, res: ServerResponse) => {
-  const { username, age, hobbies } = user
+export const validateUser = (data: RawUser): void => {
+  if (typeof data.username !== 'string' || data.username.trim().length === 0) {
+    throw new Error('Invalid username: must be a non-empty string')
+  }
+
+  if (typeof data.age !== 'number' || !Number.isInteger(data.age) || data.age < 0) {
+    throw new Error('Invalid age: must be a non-negative integer')
+  }
+
   if (
-    typeof username !== 'string' ||
-    typeof age !== 'number' ||
-    !Array.isArray(hobbies) ||
-    !hobbies.every((hobby) => typeof hobby === 'string')
+    !Array.isArray(data.hobbies) ||
+    !data.hobbies.every((hobby) => typeof hobby === 'string' && hobby.trim().length > 0)
   ) {
-    sendJSON(res, 400, {
-      message: 'Invalid user data format'
-    })
-    return
+    throw new Error('Invalid hobbies: must be a non-empty array of non-empty strings')
   }
 }

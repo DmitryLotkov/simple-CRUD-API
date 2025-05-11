@@ -4,92 +4,94 @@ import { sendJSON } from '../utils/sendJSON'
 import { validateUser } from '../utils/validateUser'
 import { v4 as uuidv4 } from 'uuid'
 import { User, RawUser } from '../models/user'
+import { getRequestBody } from '../utils/parseBody'
+import { findUserById } from '../utils/findUserById'
+import { userNotFound } from '../utils/userNotFound'
 
 export const getUsersController = (res: ServerResponse) => {
   sendJSON(res, 200, getAllUsers())
 }
 
-export const createUserController = (req: IncomingMessage, res: ServerResponse) => {
-  let body = ''
-
-  req.on('data', (chunk) => {
-    body += chunk
-  })
-
-  req.on('end', () => {
+export const createUserController = async (req: IncomingMessage, res: ServerResponse) => {
+  try {
+    const body = await getRequestBody(req)
+    let data: RawUser
     try {
-      const data: RawUser = JSON.parse(body)
-
-      validateUser(data, res)
-
-      const newUser: User = {
-        id: uuidv4(),
-        hobbies: data.hobbies,
-        age: data.age,
-        username: data.username
-      }
-
-      addUser(newUser)
-      sendJSON(res, 201, newUser)
-    } catch (e) {
-      sendJSON(res, 400, { message: 'Invalid data in request' })
+      data = JSON.parse(body)
+    } catch {
+      sendJSON(res, 400, { message: 'Invalid JSON format' })
+      return
     }
-  })
 
-  req.on('error', () => {
-    sendJSON(res, 500, { message: 'Server error' })
-  })
+    validateUser(data)
+
+    const newUser: User = {
+      id: uuidv4(),
+      hobbies: data.hobbies,
+      age: data.age,
+      username: data.username
+    }
+
+    addUser(newUser)
+    sendJSON(res, 201, newUser)
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Server error'
+    const status = message.startsWith('Invalid') ? 400 : 500
+    sendJSON(res, status, { message })
+  }
 }
 
 export const getUserByIdController = (userId: string, res: ServerResponse) => {
-  const userById = getAllUsers().find((user) => user.id === userId)
+  const userById = findUserById(userId)
 
   if (userById) {
     sendJSON(res, 200, userById)
   } else {
-    sendJSON(res, 404, { message: `User with id "${userId}" not found` })
+    userNotFound(res, userId)
   }
 }
 
 export const deleteUserByIdController = (userId: string, res: ServerResponse) => {
-  const userById = getAllUsers().find((user) => user.id === userId)
+  const userById = findUserById(userId)
 
   if (userById) {
     filterUsers(userId)
-    res.writeHead(204, { 'Content-Type': 'application/json' })
+    res.writeHead(204)
+    res.end()
   } else {
-    sendJSON(res, 404, { message: `User with id "${userId}" not found` })
+    userNotFound(res, userId)
   }
 }
 
-export const updateUserController = (userId: string, req: IncomingMessage, res: ServerResponse) => {
-  const userById = getAllUsers().find((user) => user.id === userId)
+export const updateUserController = async (
+  userId: string,
+  req: IncomingMessage,
+  res: ServerResponse
+) => {
+  const userById = findUserById(userId)
 
-  if (userById) {
-    let body = ''
+  if (!userById) {
+    userNotFound(res, userId)
+    return
+  }
 
-    req.on('data', (chunk) => {
-      body += chunk
-    })
+  try {
+    const body = await getRequestBody(req)
 
-    req.on('end', () => {
-      try {
-        const newUser: RawUser = JSON.parse(body)
+    let newUser: RawUser
+    try {
+      newUser = JSON.parse(body)
+    } catch {
+      sendJSON(res, 400, { message: 'Invalid JSON format' })
+      return
+    }
 
-        validateUser(newUser, res)
-
-        updateUsers(userId, newUser)
-
-        sendJSON(res, 200, newUser)
-      } catch (e) {
-        sendJSON(res, 400, { message: 'Invalid data in request' })
-      }
-    })
-
-    req.on('error', () => {
-      sendJSON(res, 500, { message: 'Server error' })
-    })
-  } else {
-    sendJSON(res, 404, { message: `User with id "${userId}" not found` })
+    validateUser(newUser)
+    updateUsers(userId, newUser)
+    sendJSON(res, 200, newUser)
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Server error'
+    const status = message.startsWith('Invalid') ? 400 : 500
+    sendJSON(res, status, { message })
   }
 }
