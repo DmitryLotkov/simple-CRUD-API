@@ -28,7 +28,7 @@ This project demonstrates a RESTful CRUD API built with TypeScript and Node.js w
 ```bash
 # Clone the repository
 git clone https://github.com/DmitryLotkov/simple-CRUD-API
-cd crud-api
+cd simple-CRUD-API
 
 # Install dependencies
 npm install
