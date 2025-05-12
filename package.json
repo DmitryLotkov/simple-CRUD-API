@@ -6,7 +6,8 @@
     "test": "jest",
     "start:prod": "tsc && node dist/index.js",
     "start:dev": "ts-node-dev --inspect --respawn src/index.ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "start:multi": "ts-node-dev --respawn src/multi.ts"
   },
   "keywords": [],
   "author": "Dmitry Lotkov",
