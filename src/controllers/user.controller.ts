@@ -86,9 +86,16 @@ export const updateUserController = async (
       return
     }
 
+    const fullUpdatedUser: User = {
+      id: userId,
+      hobbies: newUser.hobbies,
+      age: newUser.age,
+      username: newUser.username
+    }
+
     validateUser(newUser)
     updateUsers(userId, newUser)
-    sendJSON(res, 200, newUser)
+    sendJSON(res, 200, fullUpdatedUser)
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Server error'
     const status = message.startsWith('Invalid') ? 400 : 500

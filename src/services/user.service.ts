@@ -19,6 +19,6 @@ export const updateUsers = (userId: string, newUser: RawUser) => {
           id: user.id,
           ...newUser
         }
-      : { ...user }
+      : user
   )
 }
